@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -e
+
+txt=${TXT}
+if [ -z $txt ]; then
+    txt=$HOME/txt
+fi
+cd $txt
+
+if [ $# -gt 0 ]; then
+    echo "- [ ]" "$@" >> "capture.txt"
+fi
+
+printf "%s\n" "- $(date-today)" >> capture.txt
+printf "%s" "   " >> capture.txt
+vim "+normal GA" +startinsert capture.txt

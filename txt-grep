@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ -z $_LAUNCHED_AS_TXT ] ; then
+  # the variable TXT along with other options in the t command
+  printf "Please use the t command to start this\n"
+  exit -1
+fi
+
+raw=false
+
+while getopts :r opt; do
+  case $opt in
+    r)
+      raw=true
+      ;;
+    \?) exit 3;; #invalid option
+  esac
+done
+
+shift $((OPTIND - 1)) # remove options, keep non-option arguments
+
+
+grep -rin --color=always $@ * | t make-link

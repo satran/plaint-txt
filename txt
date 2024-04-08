@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+txt=${TXT}
+if [ -z $txt ]; then
+    txt=$HOME/txt
+fi
+cd $txt
+export TXT=$txt
+
+export _LAUNCHED_AS_TXT=true
+
+if [ -z $1 ]; then
+    txt-ls open | txt-fz
+else
+    $(dirname $0)/txt-$@
+fi

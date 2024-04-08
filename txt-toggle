@@ -1,0 +1,27 @@
+#!/bin/sh
+set -e
+file=$1
+lineNo=$2
+
+help() {
+    echo "txt-toggle FILE LINE"
+}
+
+if [ -z $file ]; then help; exit -1; fi
+if [ -z lineNo ]; then help; exit -1; fi
+
+txt=${TXT}
+if [ -z $txt ]; then
+    txt=$HOME/txt
+fi
+cd $txt
+
+
+line=$(sed "${lineNo}q;d" $file)
+if $(echo "${line}" | grep -q '\- \[ \]'); then
+    sed -i.bak "${lineNo}s/\- \[ \]/\- \[x\]/" ${file}
+else
+    sed -i.bak "${lineNo}s/\- \[x\]/\- \[ \]/" ${file}
+fi
+find . -iname "*.bak" -exec rm {} \;
+

@@ -1,0 +1,12 @@
+#!/bin/sh
+fzf --reverse \
+           --query " $@" \
+	   --exact \
+    	   --delimiter=":" \
+	   --bind 'ctrl-r:reload(txt-ls open)' \
+	   --bind 'ctrl-a:reload(txt-ls all)' \
+	   --bind 'ctrl-d:execute(txt-toggle {-2} {-1})+reload(txt-ls open)' \
+	   --bind 'enter:become(vim {-2} +{-1})' \
+	   --bind '?:preview:txt-cat {-2} {-1}' \
+	   --bind 'esc:change-preview-window(hidden)' \
+	   --preview-window=hidden,down,wrap

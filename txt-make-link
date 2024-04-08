@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ -z $_LAUNCHED_AS_TXT ] ; then
+  # the variable TXT along with other options in the t command
+  printf "Please use the t command to start this\n"
+  exit -1
+fi
+
+
+
+awk -v txt="$TXT" -F: '\
+  { \
+    file=$1; ln=$2; $1=""; $2="";\
+    gsub(/^[ \t]+/, "", $0);\
+    printf("\033]8;;file://%s/%s#%s\033\\%s:%s\033]8;;\033\\ %s\n", txt, file, ln, file, ln, $0)\
+  }'
+

@@ -1,0 +1,78 @@
+#!/bin/sh
+set -e
+
+if [ -z $_LAUNCHED_AS_TXT ] ; then
+  # the variable TXT along with other options in the t command
+  printf "Please use the t command to start this\n"
+  exit -1
+fi
+
+silent=false
+default="todo"
+links=false
+dots=false
+
+source $TXT/config
+
+while getopts :adls opt; do
+  case $opt in
+    a)
+      default="all"
+      ;;
+    d)
+      dots=true
+      ;;
+    l)
+      links=true
+      ;;
+    s)
+      silent=true
+      ;;
+    \?) exit 3;; #invalid option
+  esac
+done
+
+shift $((OPTIND - 1)) # remove options, keep non-option arguments
+
+restructure() {
+    if [ $silent = true ] ; then
+        if [ $links = true ]; then
+          awk -v txt="$TXT" -F: '\
+            { \
+              file=$1; ln=$2; $1=""; $2="";\
+              gsub(/^[ \t]+/, "", $0);\
+              printf("\033]8;;file://%s/%s#%s\033\\%s\033]8;;\033\\\n", txt, file, ln, $0)\
+            }'
+        else
+          awk -F: '{$1=""; $2=""; print $0}' 
+        fi
+    else
+        if [ $links = true ]; then
+           awk -v txt="$TXT" -F: '\
+              { \
+                file=$1; ln=$2; $1=""; $2="";\
+                file_wo_ext=file; \
+                gsub(/\.txt$/, "", file_wo_ext); \
+                gsub(/^[ \t]+/, "", $0);\
+                printf("%s \033]8;;file://%s/%s#%s\033\\%s\033]8;;\033\\\n", $0, txt, file, ln, file_wo_ext)\
+              }'
+        else
+          awk -F: '{file=$1; ln=$2; $1=""; $2=""; print $0 " : " file ":" ln }'
+        fi
+    fi
+}
+
+format() {
+  if [ $dots = true ]; then
+    sed 's/^[ \t]*- \[.\]/•/'
+  else
+    sed 's/^[ \t]*- //'
+  fi
+}
+
+arg=$1
+if [ -z "${arg}" ]; then
+   arg=$default
+fi
+
+txt-filter $arg | restructure | format

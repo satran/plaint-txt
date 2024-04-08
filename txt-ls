@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -z $_LAUNCHED_AS_TXT ] ; then
+  # the variable TXT along with other options in the t command
+  printf "Please use the t command to start this\n"
+  exit -1
+fi
+
+fzf \
+  --reverse \
+  --color light \
+  --bind "enter:become(vim {})"
