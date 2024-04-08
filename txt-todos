@@ -70,9 +70,25 @@ format() {
   fi
 }
 
+filter() {
+  case $1 in
+      "todo") grep -irn '\- \[ \]' *
+          ;;
+      "m") grep -irn '\- \[m\]' *
+          ;;
+      "done") grep -irn '\- \[x\]' *
+          ;;
+      "open") grep -irn '\- \[[^x]\]' *
+             ;;
+      "all") grep -irn '\- \[.\]' *
+             ;;
+      *) grep -irn "\- \[$1\]" *
+  esac
+}
+
 arg=$1
 if [ -z "${arg}" ]; then
    arg=$default
 fi
 
-txt-filter $arg | restructure | format
+filter $arg | restructure | format

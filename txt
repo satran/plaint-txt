@@ -10,8 +10,10 @@ export TXT=$txt
 
 export _LAUNCHED_AS_TXT=true
 
+lib="$(dirname $0)"
+
 if [ -z $1 ]; then
-    txt-ls open | txt-fz
+    $lib/txt-todos open | $lib/txt-fz
 else
-    $(dirname $0)/txt-$@
+    $lib/txt-$@
 fi
